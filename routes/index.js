@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
-const getAccountData = () => {
+const getData = () => {
   const jsonData = fs.readFileSync('routes/data.json');
-  return (JSON.parse(jsonData));  
+  return JSON.parse(jsonData);  
 }
-const saveAccountData = (data) => {
+const savetData = (data) => {
 const stringifyData = JSON.stringify(data)
 fs.writeFileSync('routes/data.json', stringifyData)
 }
@@ -17,18 +17,26 @@ router.get('/Success', function(req, res, next) {
   res.render('Success');
 });
 router.post('/register',function(req,res,next){
-var existAccounts = getAccountData();
-    const Id = Math.floor(100000 + Math.random() * 900000)
-   existAccounts[Id] = req.body;
-   saveAccountData(existAccounts);
+var existAccounts = getData(); 
+   existAccounts.push(req.body);
+   savetData(existAccounts);
    const data = JSON.stringify(req.body);
-   res.render('Success',{data:data,id:Id});
+   res.render('Success',{data:data});
 
 })
-router.get('/login',function(req,res,next){
+router.get('/login',function(req,res){
   res.render('login');
 })
-
+router.post('/login',function(req,res){
+  const email = req.body.email;
+  const password = req.body.password; 
+  let userdata = getData() 
+ const filterdata = userdata.filter((item)=>{
+   return item.email===email;
+    
+  })
+  res.render('Users',{data:filterdata});
+} )
 
 
 

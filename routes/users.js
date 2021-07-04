@@ -2,46 +2,60 @@ var express = require("express");
 var router = express.Router();
 var fs = require('fs')
 
-const getAccountData = () => {
+const gettData = () => {
   const jsonData = fs.readFileSync('routes/data.json');
   return (JSON.parse(jsonData));  
 }
-const saveAccountData = (data) => {
+const saveData = (data) => {
 const stringifyData = JSON.stringify(data)
 fs.writeFileSync('routes/data.json', stringifyData)
 }
 /* GET users listing. */
 
-router.get('/edituser/:id',function(req,res,next){
-  res.render('edituser',{id:req.params.id});
+
+router.get('/edituser/:email',function(req,res){
+  res.render('edituser',{email:req.params.email});
 })
-router.put('/edituser/:id',function(req,res,next){
-  var existAccounts = getAccountData()
+//update APi 
+
+
+
+router.put('/edituser/:email',function(req,res,next){
+  var exist = gettData()
   fs.readFile('routes/data.json', 'utf8', (err, data) => {
-    const Id = req.params.id;
-    existAccounts[Id] = req.body;
-    saveAccountData(existAccounts);
-    res.json(`accounts with id ${Id} has been updated`)
+    const userdata =exist.filter((item)=>{
+      return item.email==req.params.email;
+    })
+    userdata.push(req.body)
+    saveData(userdata);
+    res.render('Users',{data:[req.body]})
   }, true);
 })
-router.delete('/edituser/delete/:id',function(req,res){
+
+//Delete Api
+
+router.delete('/edituser/delete/:email',function(req,res){
   fs.readFile('routes/data.json', 'utf8', (err, data) => {
-    var existAccounts = getAccountData()
-    const Id = req.params.id;
-    delete existAccounts[Id]; 
-    saveAccountData(existAccounts);
-    res.render('index');
+    var existAccounts = gettData();
+    const userdata = existAccounts.filter((item)=>{
+      return item.email !== req.params.email;
+    })
+    saveData(userdata);
+    res.send(`account is Deleted with ${req.params.email} from json file`);
   }, true);
 })
-router.get('/:id',function(req,res,next){
+
+// ALL  USERLIST APi
+router.get('/Userlist',function(req,res,next){
   fs.readFile('routes/data.json','utf8',function(err,data){
     if(err) throw err;
-    const array = JSON.parse(data);
-    res.render('Users',{items:array[req.params.id],id:req.params.id});
+    const array = JSON.parse(data)
+     res.json(array)
     
   })
 
 })
+
 
 
 
