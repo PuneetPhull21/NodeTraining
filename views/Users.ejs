@@ -18,7 +18,6 @@
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">ID</th>
           <th scope="col">Email</th>
           <th scope="col">Name</th>
           <th scope="col">Contact</th>
@@ -27,14 +26,15 @@
         </tr>
       </thead>
       <tbody>
+             <% for( data of data ) { %>
+             
              
           <th scope="row">1</th>
-          <td><%=id%></td>
-          <td><%=items.email%></td>
-          <td><%=items.name%></td>
-          <td><%=items.contact%></td>
+          <td><%=data.email%></td>
+          <td><%=data.name%></td>
+          <td><%=data.contact%></td>
           <td>
-          <a href="./edituser/<%=id%> ">  <svg
+          <a href="/users/edituser/<%=data.email%>" >  <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
               height="16"
@@ -51,7 +51,7 @@
           </td>
           <td>
 
-           <form action="edituser/delete/<%=id%>?_method=DELETE" method="POST"><button><svg
+           <form action="/users/edituser/delete/<%=data.email%>?_method=DELETE" method="POST"><button><svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
               height="16"
@@ -70,11 +70,14 @@
             </form>
           </td>
         </tr>
-  
+        <% } %> 
       </tbody>
     </table>
+    <a href="/users/Userlist"><input
+      style="margin-left: 42rem"
+      class="btn btn-success"
+      placeholder="List User"
+    /></a>
   </body>
-  <script>
-   
-  </script>
+  
 </html>
